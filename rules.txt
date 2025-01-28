@@ -1,0 +1,5 @@
+Each of the boxes contains a skyscraper.
+Put numbers 1 to 4 into the boxes which give the height of the building. The higher the number, the taller the skyscraper.
+Each row and each column contains each number exactly once.
+The number in an arrow shows you how many skyscrapers can be seen when looking in the direction of the arrow.
+You cannot see a shorter skyscraper behind a taller one.
