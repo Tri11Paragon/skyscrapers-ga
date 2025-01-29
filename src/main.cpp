@@ -70,7 +70,7 @@ int main(int argc, const char** argv)
 
     sky::genetic_algorithm ga{problem_d, 500, 0.8, 0.1};
 
-    for (blt::i32 i = 0; i < 50; i++)
+    for (blt::i32 i = 0; i < 500; i++)
     {
         ga.run_step(2, 5);
         BLT_TRACE("Ran GP generation %d with average fitness %lf", i, ga.average_fitness());

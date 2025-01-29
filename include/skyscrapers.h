@@ -88,6 +88,11 @@ namespace sky
             return board_data[row * board_size + column];
         }
 
+        void set(const blt::i32 row, const blt::i32 column, const blt::i32 value)
+        {
+            board_data[row * board_size + column] = value;
+        }
+
         void print() const;
 
         void print(const problem_t& problem) const;

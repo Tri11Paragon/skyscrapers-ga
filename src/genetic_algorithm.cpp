@@ -19,6 +19,7 @@
 #include <blt/std/hashmap.h>
 #include <blt/std/logging.h>
 #include <blt/std/random.h>
+#include <blt/std/utility.h>
 
 namespace sky
 {
@@ -131,8 +132,8 @@ namespace sky
     {
         auto& random = get_random();
 
-        const auto first_begin = random.get_size_t(0, first.board_size * first.board_size - 1);
-        const auto first_end = random.get_size_t(first_begin + 1, first.board_size * first.board_size);
+        const auto first_begin = random.get_size_t(0, first.board_data.size() - 1);
+        const auto first_end = random.get_size_t(first_begin + 1, first.board_data.size());
 
         const auto size = first_end - first_begin;
 
@@ -152,15 +153,56 @@ namespace sky
     {
         auto& random = get_random();
 
-        // TODO: better mutation
-        const blt::i32 points = random.get_i32(0, 5);
-        for (blt::i32 i = 0; i < points; ++i)
+        switch (random.get_i32(0, 3)) // NOLINT
         {
-            const auto index = random.get_size_t(0, individual.board_size * individual.board_size);
-            const auto replacement = random.get_i32(m_problem.min(), m_problem.max() + 1);
-            individual.board_data[index] = replacement;
+        case 0:
+            {
+                const blt::i32 points = random.get_i32(0, 5);
+                for (blt::i32 i = 0; i < points; ++i)
+                {
+                    const auto index = random.get_size_t(0, individual.board_data.size());
+                    const auto replacement = random.get_i32(m_problem.min(), m_problem.max() + 1);
+                    individual.board_data[index] = replacement;
+                }
+            }
+            return individual;
+        case 1:
+            {
+                const blt::size_t s1 = random.get_size_t(0, individual.board_data.size());
+                blt::size_t s2;
+                do
+                {
+                    s2 = random.get_size_t(0, individual.board_data.size());
+                } while (s1 == s2);
+                const auto temp = individual.board_data[s1];
+                individual.board_data[s1] = individual.board_data[s2];
+                individual.board_data[s2] = temp;
+            }
+            return individual;
+        case 2:
+            {
+                if (random.choice())
+                {
+                    const blt::i32 row = random.get_i32(0, individual.board_size);
+                    std::vector<blt::i32> temp;
+                    for (blt::i32 column = 0; column < individual.board_size; column++)
+                        temp.push_back(individual.get(row, column));
+                    std::shuffle(temp.begin(), temp.end(), random);
+                    for (blt::i32 column = 0; column < individual.board_size; column++)
+                        individual.set(row, column, temp[column]);
+                } else
+                {
+                    const blt::i32 column = random.get_i32(0, individual.board_size);
+                    std::vector<blt::i32> temp;
+                    for (blt::i32 row = 0; row < individual.board_size; row++)
+                        temp.push_back(individual.get(row, column));
+                    std::shuffle(temp.begin(), temp.end(), random);
+                    for (blt::i32 row = 0; row < individual.board_size; row++)
+                        individual.set(row, column, temp[column]);
+                }
+            }
+            return individual;
         }
-
-        return individual;
+        BLT_UNREACHABLE;
     }
 }

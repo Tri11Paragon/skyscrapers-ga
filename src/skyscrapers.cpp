@@ -66,7 +66,7 @@ namespace sky
             return blt::unexpected(problem_t::error_t::MISSING_BOARD_DATA);
         }
 
-        blt::i32 index = 1;
+        blt::size_t index = 1;
 
         auto top_problems = blt::string::split(lines[index++], '\t');
 
