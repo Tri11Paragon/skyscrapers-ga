@@ -87,6 +87,10 @@ namespace sky
         {
             return board_data[row * board_size + column];
         }
+
+        void print() const;
+
+        void print(const problem_t& problem) const;
     };
 
     problem_t make_test_problem();

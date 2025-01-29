@@ -49,7 +49,7 @@ macro(blt_add_project name source type)
     project(skyscrapers-ga)
 endmacro()
 
-project(skyscrapers-ga VERSION 0.0.5)
+project(skyscrapers-ga VERSION 0.0.6)
 
 option(ENABLE_ADDRSAN "Enable the address sanitizer" OFF)
 option(ENABLE_UBSAN "Enable the ub sanitizer" OFF)

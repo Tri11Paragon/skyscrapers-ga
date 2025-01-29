@@ -1,3 +1,4 @@
+#include <genetic_algorithm.h>
 #include <blt/gfx/window.h>
 #include "blt/gfx/renderer/resource_manager.h"
 #include "blt/gfx/renderer/batch_2d_renderer.h"
@@ -64,8 +65,24 @@ int main(int argc, const char** argv)
         return EXIT_FAILURE;
     }
 
-    auto& problem_d = problem.value();
+    const auto& problem_d = problem.value();
     problem_d.print();
+
+    sky::genetic_algorithm ga{problem_d, 500, 0.8, 0.1};
+
+    for (blt::i32 i = 0; i < 50; i++)
+    {
+        ga.run_step(2, 5);
+        BLT_TRACE("Ran GP generation %d with average fitness %lf", i, ga.average_fitness());
+        auto best = ga.get_best(1);
+        BLT_TRACE("Best individual has fitness: %d", best.front().fitness);
+    }
+
+    auto best = ga.get_best(1);
+    BLT_TRACE("Best individual: %d", best.front().solution.fitness(problem_d));
+    best.front().solution.print(problem_d);
+
+    BLT_TRACE("----------");
 
     const auto test = sky::make_test_problem();
     auto sol = sky::make_test_solution();

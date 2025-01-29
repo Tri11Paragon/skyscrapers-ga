@@ -66,7 +66,9 @@ namespace sky
             return blt::unexpected(problem_t::error_t::MISSING_BOARD_DATA);
         }
 
-        auto top_problems = blt::string::split(lines[1], '\t');
+        blt::i32 index = 1;
+
+        auto top_problems = blt::string::split(lines[index++], '\t');
 
         if (top_problems.size() != static_cast<blt::size_t>(problem.board_size))
         {
@@ -79,14 +81,13 @@ namespace sky
 
         for (blt::size_t i = 0; i < static_cast<blt::size_t>(problem.board_size); i++)
         {
-            const auto index = i + 2;
             if (index >= lines.size())
             {
                 BLT_WARN("File is incorrectly formatted. Expected BOARD_SIZE '%d' number of rows describing the sizes of the board but got %lu",
                          problem.board_size, lines.size());
                 return blt::unexpected(problem_t::error_t::INCORRECT_BOARD_DATA_FOR_SIZE);
             }
-            auto data = blt::string::split(lines[index], '\t');
+            auto data = blt::string::split(lines[index++], '\t');
             if (data.size() != 2)
             {
                 BLT_WARN("File is incorrectly formatted. Expected 2 points for the side data descriptors, got %lu", data.size());
@@ -96,7 +97,7 @@ namespace sky
             problem.right.push_back(std::stoi(data[1]));
         }
 
-        auto bottom_problems = blt::string::split(lines[8], '\t');
+        auto bottom_problems = blt::string::split(lines[index], '\t');
 
         if (bottom_problems.size() != static_cast<blt::size_t>(problem.board_size))
         {
@@ -224,6 +225,44 @@ namespace sky
             fitness += column_view_count(problem, i);
         }
         return fitness;
+    }
+
+    void solution_t::print() const
+    {
+        for (blt::i32 i = 0; i < board_size; i++)
+        {
+            for (blt::i32 j = 0; j < board_size; j++)
+            {
+                BLT_TRACE_STREAM << get(i, j);
+                if (j < board_size - 1)
+                    BLT_TRACE_STREAM << '\t';
+            }
+            BLT_TRACE_STREAM << '\n';
+        }
+    }
+
+    void solution_t::print(const problem_t& problem) const
+    {
+        BLT_TRACE("Board Size: %d", board_size);
+        BLT_TRACE_STREAM << "\t";
+        for (int i = 0; i < board_size; i++)
+            BLT_TRACE_STREAM << problem.top[i] << '\t';
+        BLT_TRACE_STREAM << "\n";
+        for (int i = 0; i < board_size; i++)
+        {
+            BLT_TRACE_STREAM << problem.left[i];
+            BLT_TRACE_STREAM << '\t';
+            for (int j = 0; j < board_size; j++)
+            {
+                BLT_TRACE_STREAM << get(i, j);
+                BLT_TRACE_STREAM << '\t';
+            }
+            BLT_TRACE_STREAM << problem.right[i] << "\n";
+        }
+        BLT_TRACE_STREAM << "\t";
+        for (int i = 0; i < board_size; i++)
+            BLT_TRACE_STREAM << problem.bottom[i] << '\t';
+        BLT_TRACE_STREAM << "\n";
     }
 
     problem_t make_test_problem()

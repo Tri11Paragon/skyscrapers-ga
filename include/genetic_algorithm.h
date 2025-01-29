@@ -22,6 +22,7 @@
 #include <limits>
 #include <utility>
 #include <skyscrapers.h>
+#include <blt/std/random.h>
 
 namespace sky
 {
@@ -55,13 +56,19 @@ namespace sky
             }
         }
 
-        void run_step();
+        void run_step(blt::i32 elites = 2, blt::i32 k = 5);
 
-        [[nodiscard]] solution_t select(blt::i32 k = 5) const;
+        [[nodiscard]] double average_fitness() const;
 
-        static std::pair<solution_t, solution_t> crossover(const individual_t& first, const individual_t& second);
+        [[nodiscard]] std::vector<individual_t> get_best(blt::i32 amount);
 
-        static solution_t mutate(const individual_t& individual);
+        [[nodiscard]] blt::random::random_t& get_random() const;
+
+        [[nodiscard]] const solution_t& select(blt::i32 k = 5) const;
+
+        [[nodiscard]] std::pair<solution_t, solution_t> crossover(solution_t first, solution_t second) const;
+
+        [[nodiscard]] solution_t mutate(solution_t individual) const;
 
     private:
         double crossover_rate, mutation_rate;
