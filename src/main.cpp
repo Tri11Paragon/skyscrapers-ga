@@ -67,5 +67,16 @@ int main(int argc, const char** argv)
     auto& problem_d = problem.value();
     problem_d.print();
 
-    blt::gfx::init(blt::gfx::window_data{"My Sexy Window", init, update, destroy}.setSyncInterval(1));
+    const auto test = sky::make_test_problem();
+    auto sol = sky::make_test_solution();
+
+    test.print();
+    BLT_TRACE(sol.fitness(test));
+
+    BLT_TRACE(sky::make_test_solution_bad1().fitness(test));
+    BLT_TRACE(sky::make_test_solution_bad2().fitness(test));
+    BLT_TRACE(sky::make_test_solution_bad3().fitness(test));
+
+
+    // blt::gfx::init(blt::gfx::window_data{"My Sexy Window", init, update, destroy}.setSyncInterval(1));
 }

@@ -47,7 +47,7 @@ namespace sky
             right.reserve(board_size);
         }
 
-        void print();
+        void print() const;
 
         [[nodiscard]] blt::i32 min() const // NOLINT
         {
@@ -56,11 +56,45 @@ namespace sky
 
         [[nodiscard]] blt::i32 max() const
         {
-            return board_size + 1;
+            return board_size;
         }
     };
 
     blt::expected<problem_t, problem_t::error_t> problem_from_file(std::string_view path);
+
+    struct solution_t
+    {
+        blt::i32 board_size;
+        std::vector<blt::i32> board_data;
+
+        explicit solution_t(const blt::i32 board_size): board_size(board_size)
+        {
+            board_data.resize(board_size * board_size);
+        }
+
+        void init(const problem_t& problem);
+
+        // checks to see if the row contains duplicates. zero means all good
+        [[nodiscard]] blt::i32 row_incorrect_count(blt::i32 row) const;
+        // checks to see if the arrows are correct for this row
+        [[nodiscard]] blt::i32 row_view_count(const problem_t& problem, blt::i32 row) const;
+        [[nodiscard]] blt::i32 column_incorrect_count(blt::i32 column) const;
+        [[nodiscard]] blt::i32 column_view_count(const problem_t& problem, blt::i32 column) const;
+
+        [[nodiscard]] blt::i32 fitness(const problem_t& problem) const;
+
+        [[nodiscard]] blt::i32 get(const blt::i32 row, const blt::i32 column) const
+        {
+            return board_data[row * board_size + column];
+        }
+    };
+
+    problem_t make_test_problem();
+
+    solution_t make_test_solution();
+    solution_t make_test_solution_bad1();
+    solution_t make_test_solution_bad2();
+    solution_t make_test_solution_bad3();
 }
 
 #endif //SKYSCRAPERS_H
